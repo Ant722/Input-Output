@@ -15,9 +15,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Basket basket;
         File textFile = new File("basket.txt");
-
         basket = inputMethod(scanner, textFile);
-
         basket.printCart();
 
     }
@@ -25,8 +23,8 @@ public class Main {
     private static Basket inputMethod(Scanner scanner, File textFile) throws FileNotFoundException {
         Basket basket;
         if (textFile.exists()) {
-            System.out.println("Корзина покупок,нажмите ввод.");
             basket = Basket.loadFromTxtFile(textFile);
+            basket.printCart();
         } else {
             basket = new Basket(products);
         }

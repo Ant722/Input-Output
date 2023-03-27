@@ -1,7 +1,9 @@
-public class Food {
+import java.io.Serializable;
+
+public class Food implements Serializable {
     private final String name;
     private final int prices;
-    private int quantity = 0;
+    private int quantity;
 
     public Food(String name, int prices) {
         this.name = name;
@@ -28,5 +30,15 @@ public class Food {
     public void setQuantity(int amount) {
 
         this.quantity += amount;
+    }
+
+    @Override
+    public String toString() {
+        return  name +
+                "/" + quantity +
+                "/[шт]/" + prices +
+                "/[руб/шт]/" + (prices * quantity) +
+                "/[руб в сумме.]\n";
+
     }
 }
