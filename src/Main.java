@@ -4,35 +4,36 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    private static final Food[] products = {
+    private static final Food[] productFood = {
             new Food("Тушёнка(упаковка-12шт)", 2000),
             new Food("Крупа гречневая(мешок-20кг)", 1600),
             new Food("Сгущеное молоко(жб-10л)", 3000),
 
     };
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
         Basket basket;
-        File textFile = new File("basket.txt");
+        //File textFile = new File("basket.txt");
+        File binFile = new File("basket.bin");
 
-        basket = inputMethod(scanner, textFile);
+        basket = inputMethod(scanner, binFile);
 
         basket.printCart();
 
     }
 
-    private static Basket inputMethod(Scanner scanner, File textFile) throws FileNotFoundException {
+    private static Basket inputMethod(Scanner scanner, File binFile) throws IOException, ClassNotFoundException {
         Basket basket;
-        if (textFile.exists()) {
+        if (binFile.exists()) {
             System.out.println("Корзина покупок,нажмите ввод.");
-            basket = Basket.loadFromTxtFile(textFile);
+            basket = Basket.loadFromBinFile(binFile);
         } else {
-            basket = new Basket(products);
+            basket = new Basket(productFood);
         }
         System.out.println("Покупательская корзина:");
-        for (int i = 0; i < products.length; i++) {
-            System.out.println((i + 1) + "." + products[i].getName() + "/" + products[i].getPrices() + " руб/шт.");
+        for (int i = 0; i < productFood.length; i++) {
+            System.out.println((i + 1) + "." + productFood[i].getName() + "/" + productFood[i].getPrices() + " руб/шт.");
         }
 
         while (true) {
@@ -54,16 +55,12 @@ public class Main {
             } else if (Integer.parseInt(parts[1]) < 1) {
                 System.out.println("Кол-во товара должно быть больше 0.");
 
-            } else if (Integer.parseInt(parts[0]) < 1 || Integer.parseInt(parts[0]) > products.length) {
+            } else if (Integer.parseInt(parts[0]) < 1 || Integer.parseInt(parts[0]) > productFood.length) {
                 System.out.println("Введенный номер позиции отсутствует в предложенном списке. Введи корректно.");
 
             } else {
                 basket.addToCart(Integer.parseInt(parts[0]) - 1, Integer.parseInt(parts[1]));
-                try {
-                    basket.saveTxt(textFile);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                basket.saveBin(binFile);
             }
 
         }
