@@ -16,9 +16,7 @@ public class Main {
         Basket basket;
         //File textFile = new File("basket.txt");
         File binFile = new File("basket.bin");
-
         basket = inputMethod(scanner, binFile);
-
         basket.printCart();
 
     }
@@ -26,8 +24,9 @@ public class Main {
     private static Basket inputMethod(Scanner scanner, File binFile) throws IOException, ClassNotFoundException {
         Basket basket;
         if (binFile.exists()) {
-            System.out.println("Корзина покупок,нажмите ввод.");
             basket = Basket.loadFromBinFile(binFile);
+            basket.printCart();
+
         } else {
             basket = new Basket(productFood);
         }
