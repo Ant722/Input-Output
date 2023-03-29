@@ -14,7 +14,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         Basket basket;
-        File txtFile = new File("basket.txt");
+//        File txtFile = new File("basket.txt");
+        File txtFile = new File("basket.json");
         basket = inputMethod(scanner, txtFile);
         basket.printCart();
 
