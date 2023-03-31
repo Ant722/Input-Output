@@ -1,3 +1,5 @@
+import org.json.simple.parser.ParseException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,23 +13,27 @@ public class Main {
 
     };
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, ParseException {
         Scanner scanner = new Scanner(System.in);
         Basket basket;
-//        File txtFile = new File("basket.txt");
+        //       File txtFile = new File("basket.txt");
         File txtFile = new File("basket.json");
         basket = inputMethod(scanner, txtFile);
         basket.printCart();
-
+        basket.saveJson(txtFile);
     }
 
-    private static Basket inputMethod(Scanner scanner, File txtFile) throws FileNotFoundException {
+    private static Basket inputMethod(Scanner scanner, File txtFile) throws IOException, ClassNotFoundException, ParseException {
         Basket basket;
+        ClientLog client;
         if (txtFile.exists()) {
-            basket = Basket.loadFromTxtFile(txtFile);
+//            basket = Basket.loadFromTxtFile(txtFile);
+            basket = Basket.loadFromJsonFile(txtFile);
+            client = new ClientLog(Basket.loadFromJsonFile(txtFile));
             basket.printCart();
         } else {
             basket = new Basket(products);
+            client = new ClientLog(new Basket(products));
         }
         System.out.println("Покупательская корзина:");
         for (int i = 0; i < products.length; i++) {
@@ -58,15 +64,20 @@ public class Main {
 
             } else {
                 basket.addToCart(Integer.parseInt(parts[0]) - 1, Integer.parseInt(parts[1]));
+                client.log(Integer.parseInt(parts[0]) , Integer.parseInt(parts[1]));
+/*
                 try {
                     basket.saveTxt(txtFile);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-
+*/
+            }
         }
+        client.exportAsCSV(new File("log.csv"));
         return basket;
+
     }
 
 

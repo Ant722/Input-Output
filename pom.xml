@@ -7,6 +7,11 @@
     <groupId>org.example</groupId>
     <artifactId>Json</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>Basket</module>
+        <module>Basket</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
