@@ -85,7 +85,6 @@ public class Main {
         }
 
         if (log.getChildNodes().item(1).getTextContent().equals("true")) {
-            System.out.println("good");
             client.exportAsCSV(new File(log.getChildNodes().item(3).getTextContent()));
         }
     }
@@ -94,13 +93,16 @@ public class Main {
         if (load.getChildNodes().item(1).getTextContent().equals("true")) {
             File txtFileLoad = new File(load.getChildNodes().item(3).getTextContent());
             String formatLoad = load.getChildNodes().item(5).getTextContent();
-
-            if (formatLoad.equals("json")) {
-                basket = Basket.loadFromJsonFile(txtFileLoad);
-                basket.printCart();
-            } else if (formatLoad.equals("txt")) {
-                basket = Basket.loadFromTxtFile(txtFileLoad);
-                basket.printCart();
+            if (txtFileLoad.exists()) {
+                if (formatLoad.equals("json")) {
+                    basket = Basket.loadFromJsonFile(txtFileLoad);
+                    basket.printCart();
+                } else if (formatLoad.equals("txt")) {
+                    basket = Basket.loadFromTxtFile(txtFileLoad);
+                    basket.printCart();
+                }
+            } else {
+                basket = new Basket(products);
             }
         } else {
             basket = new Basket(products);
