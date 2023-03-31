@@ -7,10 +7,10 @@ import java.util.StringJoiner;
 
 public class ClientLog implements Serializable{
     static final long serialVersionUID = 1L;
-    private Basket basket;
+    Food[] products;
     List<String[]> list = new ArrayList<>();
-    public ClientLog(Basket basket){
-        this.basket = basket;
+    public ClientLog(Food[] products){
+        this.products = products;
     }
     public void log(int productNum, int amount){
         String[] str = new String[2];

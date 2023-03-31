@@ -1,5 +1,13 @@
 import org.json.simple.parser.ParseException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,28 +21,34 @@ public class Main {
 
     };
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, ParseException {
+
+    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, ParseException, ClassNotFoundException {
+
+        Basket basket = null;
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+
+        Document doc = builder.parse("shop.xml");
+        Node root = doc.getDocumentElement();
+
+        NodeList nodeList = root.getChildNodes();
+        Node load = nodeList.item(1);
+        Node save = nodeList.item(3);
+        Node log = nodeList.item(5);
+
         Scanner scanner = new Scanner(System.in);
-        Basket basket;
-        //       File txtFile = new File("basket.txt");
-        File txtFile = new File("basket.json");
-        basket = inputMethod(scanner, txtFile);
-        basket.printCart();
-        basket.saveJson(txtFile);
+        ClientLog client = new ClientLog(products);
+
+        basket = getBasket(basket, load);
+
+        addInBasket(basket, log, scanner, client);
+
+        saveBasket(basket, save);
+
     }
 
-    private static Basket inputMethod(Scanner scanner, File txtFile) throws IOException, ClassNotFoundException, ParseException {
-        Basket basket;
-        ClientLog client;
-        if (txtFile.exists()) {
-//            basket = Basket.loadFromTxtFile(txtFile);
-            basket = Basket.loadFromJsonFile(txtFile);
-            client = new ClientLog(Basket.loadFromJsonFile(txtFile));
-            basket.printCart();
-        } else {
-            basket = new Basket(products);
-            client = new ClientLog(new Basket(products));
-        }
+    private static void addInBasket(Basket basket, Node log, Scanner scanner, ClientLog client) {
         System.out.println("Покупательская корзина:");
         for (int i = 0; i < products.length; i++) {
             System.out.println((i + 1) + "." + products[i].getName() + "/" + products[i].getPrices() + " руб/шт.");
@@ -64,20 +78,49 @@ public class Main {
 
             } else {
                 basket.addToCart(Integer.parseInt(parts[0]) - 1, Integer.parseInt(parts[1]));
-                client.log(Integer.parseInt(parts[0]) , Integer.parseInt(parts[1]));
-/*
-                try {
-                    basket.saveTxt(txtFile);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                client.log(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+
             }
-*/
+
+        }
+
+        if (log.getChildNodes().item(1).getTextContent().equals("true")) {
+            System.out.println("good");
+            client.exportAsCSV(new File(log.getChildNodes().item(3).getTextContent()));
+        }
+    }
+
+    private static Basket getBasket(Basket basket, Node load) throws IOException, ParseException {
+        if (load.getChildNodes().item(1).getTextContent().equals("true")) {
+            File txtFileLoad = new File(load.getChildNodes().item(3).getTextContent());
+            String formatLoad = load.getChildNodes().item(5).getTextContent();
+
+            if (formatLoad.equals("json")) {
+                basket = Basket.loadFromJsonFile(txtFileLoad);
+                basket.printCart();
+            } else if (formatLoad.equals("txt")) {
+                basket = Basket.loadFromTxtFile(txtFileLoad);
+                basket.printCart();
+            }
+        } else {
+            basket = new Basket(products);
+        }
+        return basket;
+    }
+
+    private static void saveBasket(Basket basket, Node save) throws IOException {
+        if (save.getChildNodes().item(1).getTextContent().equals("true")) {
+            File txtFileSave = new File(save.getChildNodes().item(3).getTextContent());
+            String formatSave = save.getChildNodes().item(5).getTextContent();
+
+            if (formatSave.equals("json")) {
+                basket.saveJson(txtFileSave);
+                basket.printCart();
+            } else if (formatSave.equals("txt")) {
+                basket.saveTxt(txtFileSave);
+                basket.printCart();
             }
         }
-        client.exportAsCSV(new File("log.csv"));
-        return basket;
-
     }
 
 
