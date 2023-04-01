@@ -38,7 +38,7 @@ public class Main {
         Node log = nodeList.item(5);
 
         Scanner scanner = new Scanner(System.in);
-        ClientLog client = new ClientLog(products);
+        ClientLog client = new ClientLog();
 
         basket = getBasket(basket, load);
 

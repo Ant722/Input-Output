@@ -1,11 +1,8 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import javax.xml.crypto.dsig.keyinfo.KeyName;
+
 import java.io.*;
 import java.util.*;
 
@@ -72,65 +69,14 @@ public class Basket implements Serializable {
     public void saveJson(File textFile) throws IOException {
 
         try (FileWriter writer = new FileWriter(textFile)){
-            Gson gson = new GsonBuilder().create();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             writer.write(gson.toJson(this,Basket.class));
         }
 
-  /*      JSONObject basketJson = new JSONObject();
-        JSONArray foodArrayJson = new JSONArray();
-        for (Food food : products) {
-
-                JSONObject foods = new JSONObject();
-                foods.put("name", food.getName());
-                foods.put("price", String.valueOf(food.getPrices()));
-                foods.put("quantity", String.valueOf(food.getQuantity()));
-
-                foodArrayJson.add(foods);
-
-            basketJson.put("foodArrayJson", foodArrayJson);
-        }
-
-        basketJson.put("Итого", sumProducts);
-        try (FileWriter file = new FileWriter(textFile)) {
-            file.write(basketJson.toJSONString());
-            file.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-*/
     }
 
     public static Basket loadFromJsonFile(File file) throws IOException, ParseException {
 
-/*        JSONParser parser = new JSONParser();
-
-        try {
-            Object obj = parser.parse(new FileReader(file));
-            JSONObject basketParsedJson = (JSONObject) obj;
-
-            List<Food> foods = new ArrayList<>();
-            String name;
-            int price;
-            int quantity;
-            JSONArray listJson = (JSONArray) basketParsedJson.get("foodArrayJson");
-
-            for (Object f : listJson) {
-                JSONObject foodJson = (JSONObject) f;
-                name = (String) foodJson.get("name");
-                price = Integer.parseInt((String) foodJson.get("price"));
-                quantity = Integer.parseInt((String) foodJson.get("quantity"));
-                foods.add(new Food(name, price, quantity));
-            }
-            return new Basket(foods.toArray(Food[]::new));
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        } catch (NumberFormatException e) {
-            throw new RuntimeException(e);
-        }
- */
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         FileReader reader = new FileReader(file);

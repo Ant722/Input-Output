@@ -7,11 +7,8 @@ import java.util.StringJoiner;
 
 public class ClientLog implements Serializable{
     static final long serialVersionUID = 1L;
-    Food[] products;
-    List<String[]> list = new ArrayList<>();
-    public ClientLog(Food[] products){
-        this.products = products;
-    }
+    private List<String[]> list = new ArrayList<>();
+
     public void log(int productNum, int amount){
         String[] str = new String[2];
         str[0] = Integer.toString(productNum);
